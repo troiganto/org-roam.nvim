@@ -26,13 +26,12 @@ function Source:get_position_encoding_kind()
     return types.lsp.PositionEncodingKind.UTF8
 end
 
----@param params cmp.SourceCompletionApiParams
+---@param ctx cmp.Context
 ---@param callback fun(response: lsp.CompletionResponse|nil): nil
 ---@return OrgPromise<nil>
-function Source:complete(params, callback)
-    local ctx = params.context
+function Source:complete_with_context(ctx, callback)
     return self.roam.database:internal():next(function(db)
-        if params.context.aborted then
+        if ctx.aborted then
             return nil
         end
         local start = utils.find_start(ctx.cursor_before_line)
@@ -48,7 +47,7 @@ function Source:complete(params, callback)
                 textEdit = {
                     newText = ("[[id:%s][%s]]"):format(node.id, label),
                     range = {
-                        start = { line = ctx.cursor.line, character = start },
+                        ["start"] = { line = ctx.cursor.line, character = start },
                         ["end"] = { line = ctx.cursor.line, character = stop },
                     },
                 },
@@ -65,6 +64,13 @@ function Source:complete(params, callback)
             },
         })
     end)
+end
+
+---@param params cmp.SourceCompletionApiParams
+---@param callback fun(response: lsp.CompletionResponse|nil): nil
+---@return OrgPromise<nil>
+function Source:complete(params, callback)
+    return self:complete_with_context(params.context, callback)
 end
 
 ---@param completion_item lsp.CompletionItem
