@@ -1,24 +1,31 @@
 local utils = require "org-roam.api.completion.utils"
 
----@class MinimalContext
+---@class org-roam.api.completion.MinimalContext
 ---@field public cursor vim.Position
 ---@field public cursor_line string
 ---@field public cursor_before_line string
 ---@field public cursor_after_line string
+---@field public aborted boolean
 
----@return MinimalContext
+---@return org-roam.api.completion.MinimalContext
 local function create_context()
     local cursor = vim.api.nvim_win_get_cursor(0)
     local row = cursor[1]
     local col = cursor[2] + 1
     local cursor_line = vim.api.nvim_get_current_line()
-    local ctx = {
+    return setmetatable({
         cursor = { row = row, col = col },
         cursor_line = cursor_line,
         cursor_before_line = cursor_line:sub(1, col - 1),
         cursor_after_line = cursor_line:sub(col),
-    }
-    return ctx
+    }, {
+        ---@return boolean?
+        __index = function(_, key)
+            if key == "aborted" then
+                return vim.fn.complete_check() ~= 0
+            end
+        end,
+    })
 end
 
 ---Check if the cursor is right before `]]`.
@@ -48,12 +55,12 @@ end
 ---@alias ComplItem string|vim.CompletedItem
 
 ---@param roam OrgRoam
----@param ctx MinimalContext
+---@param ctx org-roam.api.completion.MinimalContext
 ---@param base string
 ---@return ComplItem[]|{words: ComplItem[], refresh: "always"}
 local function collect_completions(roam, ctx, base)
     local db_promise = roam.database:internal():next(function(db)
-        if vim.fn.complete_check() ~= 0 then
+        if ctx.aborted then
             return nil
         end
         local bracketed
