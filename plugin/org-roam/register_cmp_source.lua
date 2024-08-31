@@ -2,7 +2,7 @@
 ---@return nil
 local function register_in(cmp)
     local Source = require "org-roam.api.completion.cmp"
-    cmp.register_source("org-roam", Source:new(require "roam"))
+    cmp.register_source("org-roam", Source:new(require "org-roam"))
 end
 
 local has_cmp, cmp = pcall(require, "cmp")
