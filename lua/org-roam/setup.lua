@@ -25,6 +25,7 @@ return function(roam)
         M.__define_autocmds()
         M.__define_commands()
         M.__define_keybindings()
+        M.__register_with_fzf()
 
         -- Create the directories if they are missing
         vim.fn.mkdir(roam.config.directory, "p")
@@ -90,6 +91,17 @@ return function(roam)
         if not M.__modify_orgmode_plugin_done then
             M.__modify_orgmode_plugin_done = true
             require("org-roam.setup.plugin")(roam)
+        end
+    end
+
+    ---@private
+    function M.__register_with_fzf()
+        if not M.__register_with_fzf_done then
+            M.__register_with_fzf_done = true
+            local ok, select = pcall(require, "org-roam.core.ui.select-fzf")
+            if ok then
+                select.register_with_fzf()
+            end
         end
     end
 

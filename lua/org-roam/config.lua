@@ -205,6 +205,13 @@ local DEFAULT_CONFIG = {
         ---Select-node dialog configuration settings.
         ---@class org-roam.config.ui.SelectNode
         select = {
+            ---Chooses the backend used by the select dialog. The default,
+            ---`"builtin"`, uses org-roam's built-in select dialog. The value
+            ---`"fzf-lua"` uses the fzf-lua plugin
+            ---(https://github.com/ibhagwan/fzf-lua) as a select dialog.
+            ---
+            ---@type "builtin"|"fzf-lua"
+            backend = "builtin",
             ---@alias org-roam.config.ui.SelectNodeItems (string|{label:string, value:any})[]
             ---
             ---Converts an org-roam node into one or more items to display in

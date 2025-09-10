@@ -17,6 +17,8 @@ return function(roam)
     M.open_quickfix_list = QuickfixApi.open_qflist
     M.toggle_node_buffer = NodeBufferApi.toggle_node_buffer
     M.select_node = SelectNodeApi.select_node
+    M.select_node_builtin = SelectNodeApi.select_node_builtin
+    M.select_node_fzf = SelectNodeApi.select_node_fzf
 
     return M
 end

@@ -784,6 +784,33 @@
 
     Bindings tied specifically to the node selection dialog.
 
+**** backend
+
+     Chooses the backend used by the select dialog. The default, ="builtin"=,
+     uses org-roam's built-in select dialog. The value ="fzf-lua"= uses the
+     [[https://github.com/ibhagwan/fzf-lua][fzf-lua plugin]] as a select dialog.
+
+     If fzf-lua is installed, the select dialog is also made available as an
+     extension to it. That means you can start it with the command
+     =:FzfLua roam_nodes= and configure it like other fzf-lua pickers.
+
+     #+begin_src lua
+     require("org-roam").setup({
+       ui = {
+         select = {
+           backend = 'fzf',
+         },
+       },
+     })
+     require("fzf-lua").setup({
+       roam_nodes = {
+         winopts = {
+           fullscreen = true,
+         },
+       },
+     })
+     #+end_src
+
 **** node_to_items
 
      Converts an org-roam node into one or more items to display in
